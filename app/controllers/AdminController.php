@@ -6,6 +6,7 @@ class AdminController extends BaseController
 {
     public function indexAction()
     {
-        echo "admin";
+        Tag::setTitle('Admin');
+        parent::initialize();
     }
 }

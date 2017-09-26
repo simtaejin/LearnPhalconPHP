@@ -9,6 +9,12 @@ class IndexController extends BaseController
         parent::initialize();
     }
 
+    public function signoutAction()
+    {
+        $this->session->destroy();
+        $this->response->redirect('index/');
+    }
+
     public function startSessionAction()
     {
         $this->session->set('user', [

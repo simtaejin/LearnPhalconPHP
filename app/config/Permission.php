@@ -48,7 +48,7 @@ class Permission extends \Phalcon\Mvc\User\Plugin
             }
 
             foreach ($roles as $role) {
-                foreach ($this->_publicResources as $resource => $actions) {
+                foreach ($this->_publicResources as $resource => $action) {
                     $acl->allow($role->getName(), $resource, '*');
                 }
             }
@@ -74,6 +74,8 @@ class Permission extends \Phalcon\Mvc\User\Plugin
 
     public function beforeExecuteRoute(Event $event, Dispatcher $dispatcher)
     {
+//        $this->session->destroy();
+
         $role = $this->session->get('role');
         if (!$role) {
             $role = 'guest';
