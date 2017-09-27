@@ -56,6 +56,12 @@ try {
         return $flash;
     });
 
+    $di->set('url', function(){
+        $url = new Phalcon\Mvc\Url();
+        $url->setBaseUri('/');
+        return $url;
+    });
+
     // Meta-Data
     $di['modelsMetadata'] = function () {
         $metaData = new \Phalcon\Mvc\Model\MetaData\Apc([

@@ -1,18 +1,28 @@
 <?php
+
 use Phalcon\Tag;
 
 class IndexController extends BaseController
 {
+    public function onConstruct()
+    {
+        parent::initialize();
+    }
+
     public function indexAction()
     {
         Tag::setTitle('Home');
-        parent::initialize();
     }
 
     public function signoutAction()
     {
         $this->session->destroy();
         $this->response->redirect('index/');
+    }
+
+    public function generagePasswordAction($password)
+    {
+        echo $this->security->hash($password);
     }
 
     public function startSessionAction()
