@@ -9,6 +9,13 @@ class SigninController extends BaseController
         parent::initialize();
     }
 
+    private function _createuserSession(User $user)
+    {
+        $this->session->set('id', $user->id);
+        $this->session->set('role', $user->role);
+        $this->response->redirect("dashboard/index");
+    }
+
     public function indexAction()
     {
         Tag::setTitle('Signin');
@@ -33,9 +40,10 @@ class SigninController extends BaseController
 
         if ($user) {
             if ($this->security->checkHash($password, $user->password)) {
-                $this->session->set('id', $user->id);
-                $this->session->set('role', $user->role);
-                $this->response->redirect("dashboard/index");
+                $this->_createuserSession($user);
+//                $this->session->set('id', $user->id);
+//                $this->session->set('role', $user->role);
+//                $this->response->redirect("dashboard/index");
                 return;
             }
         }
@@ -87,6 +95,7 @@ class SigninController extends BaseController
             $this->response->redirect("signin/register");
             return;
         }
-        echo "YES";
+
+        $this->_createuserSession($user);
     }
 }
