@@ -11,6 +11,8 @@ class DashboardController extends BaseController
 
     public function indexAction()
     {
+        echo $this->api->get('fb')->appId;
+
         Tag::setTitle('Dashboard');
     }
 }

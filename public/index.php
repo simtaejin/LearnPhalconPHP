@@ -1,5 +1,7 @@
 <?php
 
+require '../app/config/Config.php';
+
 try {
 
     // Autoloader
@@ -14,13 +16,18 @@ try {
     // Dependency Injection
     $di = new \Phalcon\DI\FactoryDefault();
 
-    $di->set('db', function () {
-        $db = new \Phalcon\Db\Adapter\Pdo\Mysql([
-            'host' => 'localhost',
-            'username' => 'root',
-            'password' => 'test1234',
-            'dbname' => 'phalcon_exam',
-        ]);
+    $di->setShared('config', function() use ($config) {
+       return $config;
+    });
+
+    $di->setShared('api', function() use($api) {
+        return $api;
+    });
+
+    $di->set('db', function () use ($di) {
+        $dbConfig = (array) $di->get('config')->get('db');
+        $db = new \Phalcon\Db\Adapter\Pdo\Mysql($dbConfig);
+
         return $db;
     });
 
