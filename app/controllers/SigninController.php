@@ -9,13 +9,6 @@ class SigninController extends BaseController
         parent::initialize();
     }
 
-    private function _createuserSession(User $user)
-    {
-        $this->session->set('id', $user->id);
-        $this->session->set('role', $user->role);
-        $this->response->redirect("dashboard/index");
-    }
-
     public function indexAction()
     {
         Tag::setTitle('Signin');
@@ -25,13 +18,8 @@ class SigninController extends BaseController
 
     public function doSigninAction()
     {
-        if ($this->security->checkToken() == false) {
-            $this->flash->error('Invalid CSRF Token');
-            $this->response->redirect("signin/index");
-            return;
-        }
-
         $this->view->disable();
+        $this->component->helper->csrf("signin/index");
 
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
@@ -40,7 +28,9 @@ class SigninController extends BaseController
 
         if ($user) {
             if ($this->security->checkHash($password, $user->password)) {
-                $this->_createuserSession($user);
+                $this->component->user->createSession($user);
+                $this->response->redirect("dashboard/index");
+//                $this->_createuserSession($user);
 //                $this->session->set('id', $user->id);
 //                $this->session->set('role', $user->role);
 //                $this->response->redirect("dashboard/index");
@@ -96,6 +86,7 @@ class SigninController extends BaseController
             return;
         }
 
-        $this->_createuserSession($user);
+        $this->component->user->createSession($user);
+//        $this->_createuserSession($user);
     }
 }

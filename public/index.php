@@ -11,21 +11,41 @@ try {
         '../app/models/',
         '../app/config/'
     ]);
+
+    $loader->registerClasses([
+        'Component\User' => '../app/components/User.php',
+        'Component\Helper' => '../app/components/Helper.php',
+    ]);
+
     $loader->register();
 
     // Dependency Injection
     $di = new \Phalcon\DI\FactoryDefault();
 
-    $di->setShared('config', function() use ($config) {
-       return $config;
+    $di->setShared('config', function () use ($config) {
+        return $config;
     });
 
-    $di->setShared('api', function() use($api) {
+    $di->setShared('api', function () use ($api) {
         return $api;
     });
 
+    // Session
+    $di->setShared('session', function () {
+        $session = new \Phalcon\Session\Adapter\Files();
+        $session->start();
+        return $session;
+    });
+
+    $di->setShared('component', function () {
+        $obj = new stdClass();
+        $obj->helper = new \Component\Helper;
+        $obj->user = new \Component\User;
+        return $obj;
+    });
+
     $di->set('db', function () use ($di) {
-        $dbConfig = (array) $di->get('config')->get('db');
+        $dbConfig = (array)$di->get('config')->get('db');
         $db = new \Phalcon\Db\Adapter\Pdo\Mysql($dbConfig);
 
         return $db;
@@ -35,7 +55,7 @@ try {
     $di->set('view', function () {
         $view = new \Phalcon\Mvc\View();
         $view->setViewsDir('../app/views');
-        $view->registerEngines([".volt"=>'Phalcon\Mvc\View\Engine\Volt']);
+        $view->registerEngines([".volt" => 'Phalcon\Mvc\View\Engine\Volt']);
         return $view;
     });
 
@@ -46,24 +66,18 @@ try {
         return $router;
     });
 
-    // Session
-    $di->setShared('session', function () {
-        $session = new \Phalcon\Session\Adapter\Files();
-        $session->start();
-        return $session;
-    });
 
-    $di->set('flash', function() {
+    $di->set('flash', function () {
         $flash = new \Phalcon\Flash\Session([
-            'error'=> 'alert alert-danger',
-            'success'=> 'alert alert-sucess',
-            'notice'=> 'alert alert-info',
-            'warning'=> 'alert alert-warning'
+            'error' => 'alert alert-danger',
+            'success' => 'alert alert-sucess',
+            'notice' => 'alert alert-info',
+            'warning' => 'alert alert-warning'
         ]);
         return $flash;
     });
 
-    $di->set('url', function(){
+    $di->set('url', function () {
         $url = new Phalcon\Mvc\Url();
         $url->setBaseUri('/');
         return $url;
@@ -78,7 +92,7 @@ try {
         return $metaData;
     };
 
-    $di->set('dispatcher', function() use ($di) {
+    $di->set('dispatcher', function () use ($di) {
         $eventsManager = $di->getShared('eventsManager');
 
         $permission = new Permission();
