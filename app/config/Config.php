@@ -6,7 +6,7 @@ $config = new \Phalcon\Config([
         'host' => 'localhost',
         'username' => 'root',
         'password' => 'test1234',
-        'dbname' => 'phalcon_exam',
+        'dbname' => 'LearnPhalconPHP',
     ],
     'environment' => 'staging'
 ]);
